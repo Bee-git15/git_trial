@@ -24,6 +24,7 @@ I will be so good with data engineering.
 
 
 ![picture](OIP.jpeg)
+
 picture
 
 
