@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Database connection details
+DB_NAME="posey"
+DB_USER="postgres"
+DB_HOST="localhost" 
+
+# Folder containing CSV files
+CSV_DIR="C:/Users/WingSide/Documents/git_test/parch"
+
+# Loop through all CSV files in the folder
+for file in "$CSV_DIR"/*.csv; do
+    # Extract the table name from the CSV file name (e.g., sales.csv -> sales)
+    table_name=$(basename "$file" .csv)
+    
+    echo "Loading data from $file into table $table_name..."
+
+    # Copy data from CSV into the corresponding table in posey2 database
+    psql -U "$DB_USER" -d "$DB_NAME" -h "$DB_HOST" -c "/COPY $table_name FROM '$file' CSV HEADER"
+
+    if [ $? -eq 0 ]; then
+        echo "Successfully loaded $file into $table_name."
+    else
+        echo "Error loading $file into $table_name."
+    fi
+done
+
+echo "Data loading process complete."

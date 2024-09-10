@@ -1,0 +1,67 @@
+#!/bin/bash
+
+
+# Database connection details
+DB_NAME="posey"
+DB_USER="postgres"
+DB_HOST="localhost"
+
+# Array of table creation SQL statements
+declare -a CREATE_TABLES=(
+    "CREATE TABLE accounts (
+        id NUMERIC,
+        name VARCHAR(255),
+        website VARCHAR(255),
+        lat NUMERIC,
+        long NUMERIC,
+        primary_poc VARCHAR(255),
+        sales_rep_id NUMERIC
+    );"
+
+    "CREATE TABLE orders (
+        id NUMERIC,
+        account_id NUMERIC,
+        occurred_at TIMESTAMP,
+        standard_qty NUMERIC,
+        gloss_qty NUMERIC,
+        total NUMERIC,
+        standard_amt_usd NUMERIC,
+        gloss_amt_usd NUMERIC,
+        poster_amt_usd NUMERIC,
+        total_amt_usd NUMERIC
+    );"
+
+    "CREATE TABLE web_events (
+        id NUMERIC,
+        account_id NUMERIC,
+        occurred_at TIMESTAMP,
+        sale_date DATE,
+        channel VARCHAR(255)
+    );"
+
+    "CREATE TABLE sales_reps (
+        id NUMERIC,
+        name VARCHAR(255),
+        region_id NUMERIC
+    );"
+
+    "CREATE TABLE region (
+        id NUMERIC,
+        name VARCHAR(255)
+    );"  # Removed the trailing comma
+)
+
+# Loop through each table creation SQL statement and execute it
+for sql in "${CREATE_TABLES[@]}"; do
+    echo "Creating table..."
+
+    # Execute the SQL statement to create the table
+    psql -U "$DB_USER" -d "$DB_NAME" -h "$DB_HOST" -c "$sql"
+
+    if [ $? -eq 0 ]; then
+        echo "Table created successfully."
+    else
+        echo "Error creating table."
+    fi
+done
+
